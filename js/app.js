@@ -17,7 +17,8 @@ let symbols = [
     timer = {
         seconds: 0,
         minutes: 0,
-    };
+    },
+    isTimerStarted = false;
 
 // sets the star by the number of clicks
 const amazing = 15;
@@ -71,8 +72,15 @@ function showCards() {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
+function startTimerInterval() {
+    if (!isTimerStarted) {
+        timer.clearTime = setInterval(startTimer, 1000);
+        isTimerStarted = true;
+    }
+};
+
 // starts timer
-let startTimer = function() {
+function startTimer() {
     if (timer.seconds === 59) {
         timer.minutes++;
         timer.seconds = 0;
@@ -102,19 +110,19 @@ function checkMatch() {
     }
 };
 
-let addMatchAnimation = function(card) {
+function addMatchAnimation(card) {
     card.animate({marginTop: '-=50px', marginBottom: '+=50px'}, 300);
     card.animate({marginTop: '+=100px', marginBottom: '-=100px'}, 300);
     card.animate({marginTop: '-=50px', marginBottom: '+=50px'}, 300);
 };
 
-let addNotMatchAnimation = function(card) {
+function addNotMatchAnimation(card) {
     card.animate({marginRight: '-=50px', marginLeft: '+=50px'}, 300);
     card.animate({marginRight: '+=100px', marginLeft: '-=100px'}, 300);
     card.animate({marginRight: '-=50px', marginLeft: '+=50px'}, 300);
 };
 
-let addAnimateCardOpening = function(card) {
+function addAnimateCardOpening(card) {
     if(open.length === 0) {
         card.animate({height: '-=20px', width: '-=20px', marginLeft: '+=20px'}, 300);
         card.animate({height: '+=20px', width: '+=20px', marginLeft: '-=20px'}, 300);
@@ -122,14 +130,14 @@ let addAnimateCardOpening = function(card) {
 };
 
 // set the cards selected as match
-let setMatch = function() {
+function setMatch() {
     open.forEach(function(card) {
         card.addClass('match');
     });
     open = [];
     matched += 2;
     if (Won()) {
-        clearInterval(timer.clearTime);
+        stopTimer();
         gameOver();
     }
 };
@@ -153,13 +161,17 @@ function updateMoveCalculator() {
     }
 };
 
+function stopTimer() {
+    clearInterval(timer.clearTime);
+    isTimerStarted = false;
+}
+
 // resets timer
 function resetTimer() {
-    clearInterval(timer.clearTime);
+    stopTimer();
     timer.seconds = 0;
     timer.minutes = 0;
     $timer.text('0:0');
-    timer.clearTime = setInterval(startTimer, 1000);
 };
 
 // reduces the number of stars by the number of clicks
@@ -174,7 +186,7 @@ function resetStars() {
     numStars = 3;
 };
 
-let resetOpen = function() {
+function resetOpen() {
     open.forEach(function(card) {
         card.toggleClass('open');
         card.toggleClass('show');
@@ -184,6 +196,7 @@ let resetOpen = function() {
 
 function cardClicked() {
     if (isValid( $(this) )) {
+        startTimerInterval();
         openCard( $(this) );
         if (open.length === 2) {
             moveCalculator++;
@@ -224,7 +237,7 @@ function resetGame() {
 };
 
 // play again button
-let playAgain = function() {
+function playAgain() {
     resetGame();
     $('.over').removeClass('show');
 };
@@ -233,4 +246,3 @@ $('.card').click(cardClicked);
 $('.restart').click(resetGame);
 $('.play-again').click(playAgain);
 showCards();
-timer.clearTime = setInterval(startTimer, 1000);
