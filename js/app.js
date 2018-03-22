@@ -20,9 +20,8 @@ let symbols = [
     };
 
 // sets the star by the number of clicks
-const amazing = 10;
-const good = 15;
-const notbad = 20;
+const amazing = 15;
+const good = 20;
 
 //abbreviations for ease of use
 const $timer = $('.timer')
@@ -149,7 +148,7 @@ function gameOver() {
 // updates move colculator
 function updateMoveCalculator() {
     $moves.text(moveCalculator);
-    if (moveCalculator === amazing || moveCalculator === good || moveCalculator === notbad) {
+    if (moveCalculator === amazing || moveCalculator === good) {
         removeStar();
     }
 };
